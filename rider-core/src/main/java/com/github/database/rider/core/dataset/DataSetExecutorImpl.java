@@ -33,6 +33,7 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.sql.*;
 import java.util.*;
 import java.util.Map.Entry;
@@ -248,8 +249,12 @@ public class DataSetExecutorImpl implements DataSetExecutor {
                     if (!dataSetUrl.getProtocol().equals("file")) {
                         throw new RuntimeException("Csv datasets can only be accessed from files");
                     }
-                    target = new ScriptableDataSet(sensitiveTableNames, new CsvDataSet(
-                            new File(dataSetUrl.getPath()).getParentFile()));
+                    try {
+                        target = new ScriptableDataSet(sensitiveTableNames, new CsvDataSet(
+                                Paths.get(dataSetUrl.toURI()).toFile().getParentFile()));
+                    } catch (URISyntaxException e) {
+                        throw new RuntimeException(e.getMessage());
+                    }
                     break;
                 }
                 case "xlsx":
