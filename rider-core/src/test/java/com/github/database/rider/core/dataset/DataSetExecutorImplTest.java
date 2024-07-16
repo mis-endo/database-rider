@@ -166,4 +166,22 @@ public class DataSetExecutorImplTest {
 
     }
 
+    @Test
+    public void shouldLoadCSVDatasetsAsAResourceFromMultiByteDirectory() throws IOException, DataSetException {
+        DataSetExecutorImpl dse = DataSetExecutorImpl.instance(new ConnectionHolder() {
+            private static final long serialVersionUID = 1L;
+
+            @Override
+            public Connection getConnection() {
+                return null;
+            }
+        });
+
+        IDataSet iDataSetFromCsv = dse.loadDataSet("/datasets/ＭＵＬＴＩＢＹＴＥ/USER.csv");
+        String[] tableNamesCsv = iDataSetFromCsv.getTableNames();
+        assertEquals("USER", tableNamesCsv[0]);
+        assertEquals("TWEET", tableNamesCsv[1]);
+        assertEquals("FOLLOWER", tableNamesCsv[2]);
+    }
+
 }
